@@ -1,7 +1,31 @@
+#include "cli/ArgumentParser.hpp"
+
 #include <iostream>
 
-int main()
+int main(int argc, char* argv[])
 {
-    std::cout << "N1KA Converter\n";
+    ArgumentParser parser(argc, argv);
+
+    auto arguments = parser.parse();
+
+    if (!arguments)
+    {
+        return 1;
+    }
+
+    if (arguments->showHelp)
+    {
+        std::cout << "Usage: nika-converter <input> <output> [options]\n";
+        return 0;
+    }
+
+    std::cout << "Input:  " << arguments->inputPath << '\n';
+    std::cout << "Output: " << arguments->outputPath << '\n';
+
+    if (arguments->quality)
+    {
+        std::cout << "Quality: " << *arguments->quality << '\n';
+    }
+
     return 0;
 }

@@ -5,12 +5,14 @@ project(N1KA_CONVERTER
     LANGUAGES CXX
 )
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_executable(N1KA_CONVERTER
     src/main.cpp
+
+    src/cli/ArgumentParser.cpp
 )
 
 target_include_directories(N1KA_CONVERTER
