@@ -17,6 +17,7 @@ add_executable(N1KA_CONVERTER
     src/cli/ArgumentParser.cpp
 
     src/core/Image.cpp
+    src/core/ImageFormat.cpp
 
     src/codecs/DecoderFactory.cpp
     src/codecs/EncoderFactory.cpp
