@@ -11,11 +11,24 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_executable(N1KA_CONVERTER
     src/main.cpp
+    src/stb_image.cpp
+    src/stb_image_write.cpp
 
     src/cli/ArgumentParser.cpp
+
+    src/core/Image.cpp
+
+    src/codecs/DecoderFactory.cpp
+    src/codecs/EncoderFactory.cpp
+    src/codecs/JpegDecoder.cpp
+    src/codecs/PngDecoder.cpp
+    src/codecs/JpegEncoder.cpp
+    src/codecs/PngEncoder.cpp
+
 )
 
 target_include_directories(N1KA_CONVERTER
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/third_party/stb
 )

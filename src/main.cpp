@@ -1,4 +1,5 @@
 #include "cli/ArgumentParser.hpp"
+#include "core/ConversionOptions.hpp"
 
 #include <iostream>
 
@@ -12,6 +13,9 @@ int main(int argc, char* argv[])
     {
         return 1;
     }
+
+    n1ka::ConversionOptions options;
+    options.quality = arguments->quality;
 
     if (arguments->showHelp)
     {
