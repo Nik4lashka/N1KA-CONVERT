@@ -4,6 +4,9 @@
 #include <optional>
 #include <string>
 
+namespace n1ka
+{
+
 struct Arguments
 {
     std::filesystem::path inputPath;
@@ -25,3 +28,5 @@ private:
     int argc_;
     char** argv_;
 };
+
+}

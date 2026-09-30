@@ -2,62 +2,67 @@
 
 #include <iostream>
 
-ArgumentParser::ArgumentParser(int argc, char* argv[])
-    : argc_(argc), argv_(argv) {
-}
+namespace n1ka
+{
 
-ArgumentParser::~ArgumentParser() {
-}
-
-std::optional<Arguments> ArgumentParser::parse() const {
-    Arguments arguments;
-
-    if (argc_ < 2) {
-        return std::nullopt;
+    ArgumentParser::ArgumentParser(int argc, char* argv[])
+        : argc_(argc), argv_(argv) {
     }
 
-    for (int i = 1; i < argc_; i++) {
-        std::string_view argument = argv_[i];
+    ArgumentParser::~ArgumentParser() {
+    }
 
-        if (argument == "--help" || argument == "-h") {
-            arguments.showHelp = true;
-            continue;
-        }
+    std::optional<Arguments> ArgumentParser::parse() const {
+        Arguments arguments;
 
-        if (argument == "--quality") {
-            if (i + 1 >= argc_) {
-                std::cerr << "--quality requires a value.\n";
-                return std::nullopt;
-            }
-
-            try {
-                arguments.quality = std::stoi(argv_[++i]);
-            }
-            catch (...) {
-                std::cerr << "Invalid quality value.\n";
-                return std::nullopt;
-            }
-
-            continue;
-        }
-
-        if (arguments.inputPath.empty()) {
-            arguments.inputPath = argument;
-        }
-        else if (arguments.outputPath.empty()) {
-            arguments.outputPath = argument;
-        }
-        else {
-            std::cerr << "Unknown argument: " << argument << '\n';
+        if (argc_ < 2) {
             return std::nullopt;
         }
+
+        for (int i = 1; i < argc_; i++) {
+            std::string_view argument = argv_[i];
+
+            if (argument == "--help" || argument == "-h") {
+                arguments.showHelp = true;
+                continue;
+            }
+
+            if (argument == "--quality") {
+                if (i + 1 >= argc_) {
+                    std::cerr << "--quality requires a value.\n";
+                    return std::nullopt;
+                }
+
+                try {
+                    arguments.quality = std::stoi(argv_[++i]);
+                }
+                catch (...) {
+                    std::cerr << "Invalid quality value.\n";
+                    return std::nullopt;
+                }
+
+                continue;
+            }
+
+            if (arguments.inputPath.empty()) {
+                arguments.inputPath = argument;
+            }
+            else if (arguments.outputPath.empty()) {
+                arguments.outputPath = argument;
+            }
+            else {
+                std::cerr << "Unknown argument: " << argument << '\n';
+                return std::nullopt;
+            }
+        }
+
+        if (!arguments.showHelp &&
+                arguments.inputPath.empty() || arguments.outputPath.empty()) {
+                    std::cerr << "Input and output files are required.\n";
+                    return std::nullopt;
+        }
+            
+        return arguments;
     }
 
-    if (!arguments.showHelp &&
-            arguments.inputPath.empty() || arguments.outputPath.empty()) {
-                std::cerr << "Input and output files are required.\n";
-                return std::nullopt;
-    }
-        
-    return arguments;
 }

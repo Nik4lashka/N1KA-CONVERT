@@ -1,35 +1,57 @@
+#include <iostream>
+
 #include "cli/ArgumentParser.hpp"
 #include "core/ConversionOptions.hpp"
-
-#include <iostream>
+#include "core/Converter.hpp"
 
 int main(int argc, char* argv[])
 {
-    ArgumentParser parser(argc, argv);
+    n1ka::ArgumentParser parser(argc, argv);
 
-    auto arguments = parser.parse();
+    const auto arguments = parser.parse();
 
     if (!arguments)
     {
         return 1;
     }
 
-    n1ka::ConversionOptions options;
-    options.quality = arguments->quality;
-
     if (arguments->showHelp)
     {
-        std::cout << "Usage: nika-converter <input> <output> [options]\n";
+        std::cout
+            << "Usage: N1KA_CONVERTER <input> <output> [options]\n"
+            << "\n"
+            << "Options:\n"
+            << "  -h, --help          Show this help\n"
+            << "  --quality <value>  JPEG quality (0-100)\n";
+
         return 0;
     }
 
-    std::cout << "Input:  " << arguments->inputPath << '\n';
-    std::cout << "Output: " << arguments->outputPath << '\n';
+    n1ka::ConversionOptions options;
+    options.quality = arguments->quality;
 
-    if (arguments->quality)
+    n1ka::Converter converter;
+
+    try
     {
-        std::cout << "Quality: " << *arguments->quality << '\n';
+        converter.convert(
+            arguments->inputPath,
+            arguments->outputPath,
+            options
+        );
     }
+    catch (const std::exception& exception)
+    {
+        std::cerr << "Error: " << exception.what() << '\n';
+        return 1;
+    }
+
+    std::cout
+        << "Successfully converted "
+        << arguments->inputPath
+        << " -> "
+        << arguments->outputPath
+        << '\n';
 
     return 0;
 }

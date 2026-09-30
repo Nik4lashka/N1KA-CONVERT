@@ -18,6 +18,7 @@ add_executable(N1KA_CONVERTER
 
     src/core/Image.cpp
     src/core/ImageFormat.cpp
+    src/core/Converter.cpp
 
     src/codecs/DecoderFactory.cpp
     src/codecs/EncoderFactory.cpp
@@ -25,7 +26,6 @@ add_executable(N1KA_CONVERTER
     src/codecs/PngDecoder.cpp
     src/codecs/JpegEncoder.cpp
     src/codecs/PngEncoder.cpp
-
 )
 
 target_include_directories(N1KA_CONVERTER
