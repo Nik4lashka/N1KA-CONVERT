@@ -18,11 +18,11 @@ int main(int argc, char* argv[])
     if (arguments->showHelp)
     {
         std::cout
-            << "Usage: N1KA_CONVERTER <input> <output> [options]\n"
+            << "Usage: N1KA_CONVERT <input> <output> [options]\n"
             << "\n"
             << "Options:\n"
             << "  -h, --help          Show this help\n"
-            << "  --quality <value>  JPEG quality (0-100)\n";
+            << "  --quality <value>  JPEG quality (1-100)\n";
 
         return 0;
     }

@@ -4,12 +4,12 @@
 #include <algorithm>
 #include <cctype>
 
-#include "ImageFormat.hpp"
+#include "FileFormat.hpp"
 
 namespace n1ka
 {
 
-    ImageFormat getImageFormat(const std::filesystem::path& path)
+    FileFormat getFileFormat(const std::filesystem::path& path)
     {
         std::string extension = path.extension().string();
 
@@ -25,14 +25,27 @@ namespace n1ka
 
         if (extension == ".jpg" || extension == ".jpeg")
         {
-            return ImageFormat::JPEG;
+            return FileFormat::JPEG;
         }
         else if (extension == ".png")
         {
-            return ImageFormat::PNG;
+            return FileFormat::PNG;
         }
         
         throw std::invalid_argument("Unsupported image format: " + extension);
+    }
+
+    FormatCategory getFormatCategory(FileFormat format)
+    {
+        switch (format)
+        {
+        case FileFormat::PNG:
+        case FileFormat::JPEG:
+            return FormatCategory::Image;
+        
+        default:
+            throw std::invalid_argument("Unknown file format");
+        }
     }
 
 }

@@ -17,13 +17,12 @@ add_executable(N1KA_CONVERT
     src/cli/ArgumentParser.cpp
 
     src/core/Image.cpp
-    src/core/ImageFormat.cpp
+    src/core/FileFormat.cpp
     src/core/Converter.cpp
 
-    src/codecs/DecoderFactory.cpp
-    src/codecs/EncoderFactory.cpp
-    src/codecs/JpegDecoder.cpp
-    src/codecs/PngDecoder.cpp
+    src/codecs/ImageDecoderFactory.cpp
+    src/codecs/ImageEncoderFactory.cpp
+    src/codecs/StbImageDecoder.cpp
     src/codecs/JpegEncoder.cpp
     src/codecs/PngEncoder.cpp
 )

@@ -3,11 +3,11 @@
 
 #include "stb_image.h"
 
-#include "PngDecoder.hpp"
+#include "StbImageDecoder.hpp"
 
 namespace n1ka
 {
-    Image PngDecoder::decode(const std::filesystem::path& path) const
+    Image StbImageDecoder::decode(const std::filesystem::path& path) const
     {
         const std::string pathString = path.string();
         int width = 0;
