@@ -2,7 +2,7 @@
 
 A lightweight command-line image converter written in modern C++23.
 
-N1KA-CONVERT converts images between **PNG** and **JPEG**. It is built around a small, extensible codec architecture, so new image formats can be added with minimal changes.
+N1KA-CONVERT converts images between **PNG** and **JPEG**. Formats are grouped into categories, each with its own codecs, so new formats – and later entirely new kinds of files – can be added with minimal changes.
 
 ## Features
 
@@ -52,14 +52,6 @@ Each preset is available as a configure preset and as a build preset with the sa
 
 Run `cmake --list-presets` to list all available presets.
 
-### Presets
-
-| Preset                  | Type      | Description                    |
-|-------------------------|-----------|--------------------------------|
-| `windows-clang`         | Configure | Windows x64, Clang, Ninja      |
-| `windows-clang-debug`   | Build     | Debug build with debug symbols |
-| `windows-clang-release` | Build     | Optimized release build        |
-
 ## Usage
 
 ```
@@ -99,9 +91,11 @@ Error messages are written to `stderr`.
 
 ## How It Works
 
-1. `getImageFormat()` determines the input and output format from the file extensions.
-2. `DecoderFactory` creates the matching `ImageDecoder`, which loads the file into an `Image` (width, height, channels and raw 8-bit pixel data).
-3. `EncoderFactory` creates the matching `ImageEncoder`, which writes the `Image` in the target format using the given `ConversionOptions`.
+1. `getFileFormat()` determines the input and output `FileFormat` from the file extensions.
+2. `getFormatCategory()` assigns each format to a `FormatCategory` (currently `Image`). Input and output must belong to the same category, otherwise the conversion is rejected.
+3. `Converter` passes the conversion on to the pipeline of that category. For images:
+   - `ImageDecoderFactory` creates a `StbImageDecoder`, which loads the file into an `Image` (width, height, channels and raw 8-bit pixel data). stb_image detects the actual format from the file content, so one decoder serves all readable formats.
+   - `ImageEncoderFactory` creates the matching `ImageEncoder` (`PngEncoder` or `JpegEncoder`), which writes the `Image` using the given `ConversionOptions`.
 
 ## Project Structure
 
@@ -110,8 +104,8 @@ N1KA-CONVERT/
 ├── src/
 │   ├── main.cpp           Entry point
 │   ├── cli/               Command-line argument parsing
-│   ├── core/              Image model, format detection, conversion pipeline
-│   ├── codecs/            Decoder/encoder interfaces, factories, PNG and JPEG codecs
+│   ├── core/              Image model, file formats and categories, conversion pipeline
+│   ├── codecs/            Decoder/encoder interfaces and factories, stb decoder, PNG and JPEG encoders
 │   ├── Version.hpp.in     Version header template (filled in by CMake)
 │   └── Version.rc.in      Windows version resource template (filled in by CMake)
 ├── third_party/stb/       stb_image and stb_image_write
@@ -121,10 +115,19 @@ N1KA-CONVERT/
 
 ## Adding a New Format
 
-1. Add a value to `ImageFormat` in `src/core/ImageFormat.hpp` and map its file extensions in `getImageFormat()` in `src/core/ImageFormat.cpp`.
-2. Implement a decoder derived from `ImageDecoder` and/or an encoder derived from `ImageEncoder` in `src/codecs/`.
-3. Register them in `DecoderFactory::create()` and `EncoderFactory::create()`.
-4. Add the new source files to `add_executable` in `CMakeLists.txt`.
+1. Add a value to `FileFormat` in `src/core/FileFormat.hpp` and map its file extensions in `getFileFormat()` in `src/core/FileFormat.cpp`.
+2. Assign the format to its category in `getFormatCategory()`.
+3. **Reading:** If stb_image can read the format (BMP, TGA, GIF, PSD, HDR, PIC, PNM), add a `case` returning `StbImageDecoder` to `ImageDecoderFactory::create()`. Otherwise implement a decoder derived from `ImageDecoder`.
+4. **Writing:** Implement an encoder derived from `ImageEncoder` in `src/codecs/` and add a `case` for it to `ImageEncoderFactory::create()`.
+5. Add any new source files to `add_executable` in `CMakeLists.txt`.
+
+### Adding a New Category
+
+Formats that need a different in-memory model than `Image` (for example JSON or CSV) get their own category:
+
+1. Add a value to `FormatCategory` and assign the new formats to it in `getFormatCategory()`.
+2. Define the in-memory model and the matching decoder/encoder interfaces and factories.
+3. Add a `case` for the category to `Converter::convert()` that calls the new pipeline.
 
 ## Versioning
 

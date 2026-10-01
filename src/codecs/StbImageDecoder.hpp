@@ -8,7 +8,7 @@
 namespace n1ka
 {
 
-class JpegDecoder : public ImageDecoder
+class StbImageDecoder : public ImageDecoder
 {
 public:
     Image decode(const std::filesystem::path& path) const override;

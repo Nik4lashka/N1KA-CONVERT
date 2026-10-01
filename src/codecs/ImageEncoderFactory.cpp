@@ -1,20 +1,20 @@
 #include <memory>
 #include <stdexcept>
 
-#include "EncoderFactory.hpp"
+#include "ImageEncoderFactory.hpp"
 #include "JpegEncoder.hpp"
 #include "PngEncoder.hpp"
 
 namespace n1ka
 {
-    std::unique_ptr<ImageEncoder> EncoderFactory::create(ImageFormat format)
+    std::unique_ptr<ImageEncoder> ImageEncoderFactory::create(FileFormat format)
     {
         switch (format)
         {
-        case ImageFormat::JPEG:
+        case FileFormat::JPEG:
             return std::make_unique<JpegEncoder>();
 
-        case ImageFormat::PNG:
+        case FileFormat::PNG:
             return std::make_unique<PngEncoder>();
 
         default:
