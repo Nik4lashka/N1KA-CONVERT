@@ -8,7 +8,8 @@ namespace n1ka
 enum class FileFormat
 {
     JPEG,
-    PNG
+    PNG,
+    BMP
 };
 
 enum class FormatCategory

@@ -4,6 +4,7 @@
 #include "ImageEncoderFactory.hpp"
 #include "JpegEncoder.hpp"
 #include "PngEncoder.hpp"
+#include "BmpEncoder.hpp"
 
 namespace n1ka
 {
@@ -16,6 +17,9 @@ namespace n1ka
 
         case FileFormat::PNG:
             return std::make_unique<PngEncoder>();
+
+        case FileFormat::BMP:
+            return std::make_unique<BmpEncoder>();
 
         default:
             throw std::invalid_argument("Unsupported image format");

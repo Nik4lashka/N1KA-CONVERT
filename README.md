@@ -2,11 +2,11 @@
 
 A lightweight command-line image converter written in modern C++23.
 
-N1KA-CONVERT converts images between **PNG** and **JPEG**. Formats are grouped into categories, each with its own codecs, so new formats – and later entirely new kinds of files – can be added with minimal changes.
+N1KA-CONVERT converts images between **PNG**, **JPEG** and **BMP**. Formats are grouped into categories, each with its own codecs, so new formats – and later entirely new kinds of files – can be added with minimal changes.
 
 ## Features
 
-- Convert PNG ↔ JPEG, or re-encode an image within the same format
+- Convert between PNG, JPEG and BMP, or re-encode an image within the same format
 - Adjustable JPEG quality
 - Automatic format detection from the file extension (case-insensitive)
 - Keeps the channel layout of the source image (grayscale, RGB, RGBA)
@@ -15,10 +15,11 @@ N1KA-CONVERT converts images between **PNG** and **JPEG**. Formats are grouped i
 
 ## Supported Formats
 
-| Format | Extensions      | Read | Write | Notes                                          |
-|--------|-----------------|:----:|:-----:|------------------------------------------------|
-| PNG    | `.png`          |  ✓   |   ✓   | Lossless, supports transparency                |
-| JPEG   | `.jpg`, `.jpeg` |  ✓   |   ✓   | Lossy; the alpha channel is discarded on write |
+| Format | Extensions      | Read | Write | Notes                                                                                       |
+|--------|-----------------|:----:|:-----:|---------------------------------------------------------------------------------------------|
+| PNG    | `.png`          |  ✓   |   ✓   | Lossless, supports transparency                                                             |
+| JPEG   | `.jpg`, `.jpeg` |  ✓   |   ✓   | Lossy; the alpha channel is discarded on write                                              |
+| BMP    | `.bmp`          |  ✓   |   ✓   | Lossless; transparency is kept for RGBA images. 1-bit and RLE-compressed files cannot be read |
 
 ## Requirements
 
@@ -65,7 +66,7 @@ The input and output formats are determined by the file extensions.
 | Option              | Description                                                   |
 |---------------------|---------------------------------------------------------------|
 | `-h`, `--help`      | Show the help text                                            |
-| `--quality <1-100>` | JPEG quality, higher means better quality and larger files. Default: `90`. Ignored for PNG output. |
+| `--quality <1-100>` | JPEG quality, higher means better quality and larger files. Default: `90`. Ignored for PNG and BMP output. |
 
 ### Examples
 
@@ -78,6 +79,9 @@ N1KA_CONVERT photo.png photo.jpg --quality 75
 
 # JPEG to PNG
 N1KA_CONVERT scan.jpeg scan.png
+
+# BMP to PNG
+N1KA_CONVERT image.bmp image.png
 ```
 
 ### Exit Codes
@@ -95,7 +99,7 @@ Error messages are written to `stderr`.
 2. `getFormatCategory()` assigns each format to a `FormatCategory` (currently `Image`). Input and output must belong to the same category, otherwise the conversion is rejected.
 3. `Converter` passes the conversion on to the pipeline of that category. For images:
    - `ImageDecoderFactory` creates a `StbImageDecoder`, which loads the file into an `Image` (width, height, channels and raw 8-bit pixel data). stb_image detects the actual format from the file content, so one decoder serves all readable formats.
-   - `ImageEncoderFactory` creates the matching `ImageEncoder` (`PngEncoder` or `JpegEncoder`), which writes the `Image` using the given `ConversionOptions`.
+   - `ImageEncoderFactory` creates the matching `ImageEncoder` (`PngEncoder`, `JpegEncoder` or `BmpEncoder`), which writes the `Image` using the given `ConversionOptions`.
 
 ## Project Structure
 
@@ -105,7 +109,7 @@ N1KA-CONVERT/
 │   ├── main.cpp           Entry point
 │   ├── cli/               Command-line argument parsing
 │   ├── core/              Image model, file formats and categories, conversion pipeline
-│   ├── codecs/            Decoder/encoder interfaces and factories, stb decoder, PNG and JPEG encoders
+│   ├── codecs/            Decoder/encoder interfaces and factories, stb decoder, PNG, JPEG and BMP encoders
 │   ├── Version.hpp.in     Version header template (filled in by CMake)
 │   └── Version.rc.in      Windows version resource template (filled in by CMake)
 ├── third_party/stb/       stb_image and stb_image_write
@@ -117,7 +121,7 @@ N1KA-CONVERT/
 
 1. Add a value to `FileFormat` in `src/core/FileFormat.hpp` and map its file extensions in `getFileFormat()` in `src/core/FileFormat.cpp`.
 2. Assign the format to its category in `getFormatCategory()`.
-3. **Reading:** If stb_image can read the format (BMP, TGA, GIF, PSD, HDR, PIC, PNM), add a `case` returning `StbImageDecoder` to `ImageDecoderFactory::create()`. Otherwise implement a decoder derived from `ImageDecoder`.
+3. **Reading:** If stb_image can read the format (TGA, GIF, PSD, HDR, PIC, PNM), add a `case` returning `StbImageDecoder` to `ImageDecoderFactory::create()`. Otherwise implement a decoder derived from `ImageDecoder`.
 4. **Writing:** Implement an encoder derived from `ImageEncoder` in `src/codecs/` and add a `case` for it to `ImageEncoderFactory::create()`.
 5. Add any new source files to `add_executable` in `CMakeLists.txt`.
 

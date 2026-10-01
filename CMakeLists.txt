@@ -22,9 +22,12 @@ add_executable(N1KA_CONVERT
 
     src/codecs/ImageDecoderFactory.cpp
     src/codecs/ImageEncoderFactory.cpp
+
     src/codecs/StbImageDecoder.cpp
+
     src/codecs/JpegEncoder.cpp
     src/codecs/PngEncoder.cpp
+    src/codecs/BmpEncoder.cpp
 )
 
 target_include_directories(N1KA_CONVERT

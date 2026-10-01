@@ -12,6 +12,7 @@ namespace n1ka
         {
         case FileFormat::JPEG:
         case FileFormat::PNG:
+        case FileFormat::BMP:
             return std::make_unique<StbImageDecoder>();
 
         default:

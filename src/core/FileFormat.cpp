@@ -31,6 +31,10 @@ namespace n1ka
         {
             return FileFormat::PNG;
         }
+        else if (extension == ".bmp")
+        {
+            return FileFormat::BMP;
+        }
         
         throw std::invalid_argument("Unsupported image format: " + extension);
     }
@@ -41,6 +45,7 @@ namespace n1ka
         {
         case FileFormat::PNG:
         case FileFormat::JPEG:
+        case FileFormat::BMP:
             return FormatCategory::Image;
         
         default:
