@@ -57,7 +57,7 @@ namespace n1ka
         }
 
         if (!arguments.showHelp &&
-                arguments.inputPath.empty() || arguments.outputPath.empty()) {
+                (arguments.inputPath.empty() || arguments.outputPath.empty())) {
                     std::cerr << "Input and output files are required.\n";
                     return std::nullopt;
         }
